@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div style="font-size: 0.8rem; color: #888;">자산 목록 > {{ asset.name }} > 요청 작업</div>
+    <h2>{{ asset.name }} — 게시글 작성/수정</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <p>제목: <input type="text" name="title" value="{{ article.title }}" required style="width: 100%;"></p>
+        <p>작성자: <input type="text" name="author" value="{{ article.author }}" placeholder="익명" style="width: 100%;"></p>
+        <p>내용: <textarea name="content" rows="10" required style="width: 100%;">{{ article.content }}</textarea></p>
+        <button type="submit" style="background: #00a896; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">완료</button>
+    </form>
+    <br>
+    <a href="{% url 'articles:asset_board' asset.id %}" style="color: #888; text-decoration: none;">취소</a>
+</div>
+{% endblock %}

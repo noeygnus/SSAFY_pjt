@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">금융 자산 목록</h2>
+<div class="row">
+    {% for asset in assets_data %}
+    <div class="col-12 mb-3">
+        <div class="card shadow-sm p-3">
+            <a href="{% url 'articles:asset_board' asset.id %}" class="fs-4 fw-bold text-decoration-none mint-text">
+                {{ asset.name }}
+            </a>
+            <p class="mb-1 text-secondary">{{ asset.description }}</p>
+            <small class="text-muted">위험도: {{ asset.risk_level }}</small>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "community/base.html" %}
+
+{% block title %}회원가입 | 금융 자산 커뮤니티{% endblock %}
+
+{% block extra_css %}
+<style>
+  .checkbox-list {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+  }
+
+  .checkbox-list label {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    margin: 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">회원가입</h1>
+<p class="text-muted mb-0">관심 종목과 프로필 정보를 입력해 주세요.</p>
+
+<form method="post" enctype="multipart/form-data" class="mt-2">
+  {% csrf_token %}
+  {% include "accounts/_form_errors.html" %}
+
+  {% for field in form %}
+  <div class="form-group">
+    {{ field.label_tag }}
+    {% if field.name == "interest_stocks" %}
+      <div class="checkbox-list">{{ field }}</div>
+    {% else %}
+      {{ field }}
+    {% endif %}
+    {% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}
+    {% for error in field.errors %}
+      <div class="form-errors">{{ error }}</div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  <div class="form-actions btn-group">
+    <button type="submit" class="btn">가입하기</button>
+    <a href="{% url 'accounts:login' %}" class="btn btn-secondary">로그인</a>
+  </div>
+</form>
+{% endblock %}

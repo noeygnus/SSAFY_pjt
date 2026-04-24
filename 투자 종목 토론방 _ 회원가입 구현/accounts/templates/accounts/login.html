@@ -1,0 +1,27 @@
+{% extends "community/base.html" %}
+
+{% block title %}로그인 | 금융 자산 커뮤니티{% endblock %}
+
+{% block content %}
+<h1 class="page-title">로그인</h1>
+
+<form method="post" class="mt-2">
+  {% csrf_token %}
+  {% include "accounts/_form_errors.html" %}
+
+  {% for field in form %}
+  <div class="form-group">
+    {{ field.label_tag }}
+    {{ field }}
+    {% for error in field.errors %}
+      <div class="form-errors">{{ error }}</div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  <div class="form-actions btn-group">
+    <button type="submit" class="btn">로그인</button>
+    <a href="{% url 'accounts:signup' %}" class="btn btn-secondary">회원가입</a>
+  </div>
+</form>
+{% endblock %}

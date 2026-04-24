@@ -1,0 +1,118 @@
+{% extends "community/base.html" %}
+
+{% block title %}{{ post.title }} | 금융 자산 커뮤니티{% endblock %}
+
+{% block extra_css %}
+<style>
+  .article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-content {
+    white-space: pre-wrap;
+    line-height: 1.7;
+    font-size: 0.9375rem;
+  }
+
+  .post-actions {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .form-inline {
+    display: inline;
+  }
+
+  .comments {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .comment-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.4rem;
+  }
+
+  .comment-content {
+    white-space: pre-wrap;
+    margin: 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<p class="breadcrumb">
+  <a href="{% url 'community:asset_list' %}">자산 목록</a> &gt;
+  <a href="{% url 'community:board' asset.id %}">{{ asset.name }}</a> &gt; 글 보기
+</p>
+
+<article>
+  <header class="article-header">
+    <h1 class="page-title">{{ post.title }}</h1>
+    <p class="text-muted mb-0">{{ post.author }} · {{ post.created_at|date:"Y-m-d H:i" }}</p>
+  </header>
+  <div class="post-content">{{ post.content }}</div>
+</article>
+
+<div class="post-actions btn-group">
+  <a href="{% url 'community:board' asset.id %}" class="btn btn-secondary">목록으로</a>
+  {% if can_edit %}
+  <a href="{% url 'community:post_update' asset.id post.id %}" class="btn">수정</a>
+  <form action="{% url 'community:post_delete' asset.id post.id %}" method="post" class="form-inline">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+  </form>
+  {% endif %}
+</div>
+
+<section class="comments">
+  <h2 class="page-title">댓글</h2>
+
+  <ul class="comment-list">
+    {% for comment in comments %}
+    <li class="card-item">
+      <div class="comment-head">
+        <span class="text-muted">{{ comment.author }} · {{ comment.created_at|date:"Y-m-d H:i" }}</span>
+        {% if user.is_authenticated and comment.author == user.username %}
+        <form action="{% url 'community:comment_delete' asset.id post.id comment.id %}" method="post" class="form-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('댓글을 삭제하시겠습니까?');">삭제</button>
+        </form>
+        {% endif %}
+      </div>
+      <p class="comment-content">{{ comment.content }}</p>
+    </li>
+    {% empty %}
+    <li class="text-muted">아직 댓글이 없습니다.</li>
+    {% endfor %}
+  </ul>
+
+  {% if user.is_authenticated %}
+  <form action="{% url 'community:comment_create' asset.id post.id %}" method="post" class="mt-2">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="id_comment">댓글 작성</label>
+      <textarea id="id_comment" name="content" rows="4" required class="form-textarea"></textarea>
+    </div>
+    <button type="submit" class="btn">댓글 등록</button>
+  </form>
+  {% else %}
+  <p class="text-muted">댓글을 작성하려면 <a href="{% url 'accounts:login' %}">로그인</a>해 주세요.</p>
+  {% endif %}
+</section>
+{% endblock %}

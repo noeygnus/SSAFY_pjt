@@ -1,0 +1,9 @@
+{% extends "community/base.html" %}
+
+{% block title %}페이지를 찾을 수 없습니다{% endblock %}
+
+{% block content %}
+<h1 class="page-title">페이지를 찾을 수 없습니다</h1>
+<p class="text-muted">요청한 금융 자산 또는 게시글이 존재하지 않습니다.</p>
+<a href="{% url 'community:asset_list' %}" class="btn">메인으로 이동</a>
+{% endblock %}

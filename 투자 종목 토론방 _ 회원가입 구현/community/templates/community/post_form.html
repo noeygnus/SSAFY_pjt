@@ -1,0 +1,29 @@
+{% extends "community/base.html" %}
+
+{% block title %}{% if is_edit %}글 수정{% else %}글쓰기{% endif %} | {{ asset.name }}{% endblock %}
+
+{% block content %}
+<p class="breadcrumb">
+  <a href="{% url 'community:asset_list' %}">자산 목록</a> &gt;
+  <a href="{% url 'community:board' asset.id %}">{{ asset.name }}</a> &gt;
+  {% if is_edit %}글 수정{% else %}글쓰기{% endif %}
+</p>
+
+<h1 class="page-title">{{ asset.name }} {% if is_edit %}글 수정{% else %}글쓰기{% endif %}</h1>
+
+<form method="post" class="mt-2">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="id_title">제목</label>
+    <input id="id_title" type="text" name="title" value="{{ title|default:'' }}" required maxlength="200" class="form-input-full">
+  </div>
+  <div class="form-group">
+    <label for="id_content">내용</label>
+    <textarea id="id_content" name="content" rows="10" required class="form-textarea">{{ content|default:'' }}</textarea>
+  </div>
+  <div class="form-actions btn-group">
+    <button type="submit" class="btn">{% if is_edit %}수정 저장{% else %}등록{% endif %}</button>
+    <a href="{% url 'community:board' asset.id %}" class="btn btn-secondary">취소</a>
+  </div>
+</form>
+{% endblock %}

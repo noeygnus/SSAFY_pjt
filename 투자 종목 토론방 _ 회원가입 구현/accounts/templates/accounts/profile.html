@@ -1,0 +1,100 @@
+{% extends "community/base.html" %}
+
+{% block title %}프로필 | 금융 자산 커뮤니티{% endblock %}
+
+{% block extra_css %}
+<style>
+  .profile-head {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-image {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+
+  .profile-placeholder {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--color-primary-light);
+    color: var(--color-primary-hover);
+    font-weight: 700;
+    border: 1px solid var(--color-border);
+  }
+
+  .section {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .simple-list {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-head">
+  {% if profile_user.profile_image %}
+    <img src="{{ profile_user.profile_image.url }}" alt="{{ profile_user.username }} 프로필 이미지" class="profile-image">
+  {% else %}
+    <div class="profile-placeholder">{{ profile_user.username|first|upper }}</div>
+  {% endif %}
+  <div>
+    <h1 class="page-title">{{ profile_user.nickname }}</h1>
+    <p class="text-muted mb-0">@{{ profile_user.username }}</p>
+    <div class="btn-group mt-1">
+      <a href="{% url 'accounts:investment_analysis' %}" class="btn">투자 성향 분석</a>
+    </div>
+  </div>
+</div>
+
+<section>
+  <h2 class="page-title">관심 종목</h2>
+  {% if interest_names %}
+    <p class="text-muted">{{ interest_names|join:", " }}</p>
+  {% else %}
+    <p class="text-muted">등록한 관심 종목이 없습니다.</p>
+  {% endif %}
+</section>
+
+<section class="section">
+  <h2 class="page-title">내가 작성한 게시글</h2>
+  <ul class="simple-list">
+    {% for post in posts %}
+    <li>
+      <a href="{% url 'community:post_detail' post.asset_id post.id %}">{{ post.title }}</a>
+      <span class="text-muted">· {{ post.created_at|date:"Y-m-d H:i" }}</span>
+    </li>
+    {% empty %}
+    <li class="text-muted">작성한 게시글이 없습니다.</li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="section">
+  <h2 class="page-title">내가 작성한 댓글</h2>
+  <ul class="simple-list">
+    {% for comment in comments %}
+    <li>
+      <a href="{% url 'community:post_detail' comment.post.asset_id comment.post.id %}">{{ comment.post.title }}</a>
+      <span class="text-muted">· {{ comment.content|truncatechars:40 }}</span>
+    </li>
+    {% empty %}
+    <li class="text-muted">작성한 댓글이 없습니다.</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
